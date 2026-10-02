@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slime's Revenge</title>
+  <link rel="icon" id="favicon" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-pattern"></div>
+
+  <div class="container">
+    <!-- TITLE -->
+    <div class="title-wrap">
+      <h1 class="title">SLIME'S<br>REVENGE</h1>
+      <p class="subtitle">— A PIXEL TALE —</p>
+    </div>
+
+    <!-- PIXEL SLIME -->
+    <div class="slime-wrap">
+      <div class="slime-container" id="slime" onclick="playDamageSound()" style="cursor:pointer;" title="Poke slime (Damage SFX)">
+        <canvas id="slimeCanvas" width="80" height="80"></canvas>
+      </div>
+      <div class="slime-shadow"></div>
+    </div>
+
+    <!-- MENU -->
+    <nav class="menu">
+      <div class="menu-card card-play" data-tilt onclick="menuClick('play')">
+        <span class="card-label"><span class="card-icon">▶</span> PLAY</span>
+      </div>
+      <div class="menu-card card-settings" data-tilt onclick="menuClick('settings')">
+        <span class="card-label"><span class="card-icon">⚙</span> SETTINGS</span>
+      </div>
+      <div class="menu-card card-credits" data-tilt onclick="menuClick('credits')">
+        <span class="card-label"><span class="card-icon">★</span> CREDITS</span>
+      </div>
+    </nav>
+
+    <p class="footer">v0.1.2 • 2026</p>
+  </div>
+
+  <!-- PLAY SCREEN (GAMEMODE SELECTOR) -->
+  <div class="play-screen" id="playScreen">
+    <div class="title-wrap" style="margin-bottom:0">
+      <h2 class="play-title">SELECT MODE</h2>
+      <p class="play-subtitle">— CHOOSE YOUR CHALLENGE —</p>
+    </div>
+    <nav class="menu">
+      <div class="menu-card card-classic" data-tilt onclick="selectMode('classic')">
+        <span class="card-label">
+          <span class="card-icon">⚔</span> CLASSIC
+          <span class="mode-desc">Standard Boss Rush</span>
+        </span>
+      </div>
+      <div class="menu-card card-endless" data-tilt onclick="selectMode('endless')">
+        <span class="card-label">
+          <span class="card-icon">⚡</span> ENDLESS
+          <span class="mode-desc">Survive Infinite Waves</span>
+        </span>
+      </div>
+      <div class="menu-card card-placeholder" data-tilt onclick="selectMode('placeholder')">
+        <span class="card-label">
+          <span class="card-icon">❓</span> PLACEHOLDER
+          <span class="mode-desc">Under Construction</span>
+        </span>
+      </div>
+    </nav>
+    <div class="back-btn" onclick="playClick();showMenu()">← BACK</div>
+  </div>
+
+  <!-- SETTINGS SCREEN -->
+  <div class="settings-screen" id="settingsScreen">
+    <h2 class="settings-title">⚙ SETTINGS ⚙</h2>
+    <div class="settings-group">
+      <p class="setting-label">MASTER</p>
+      <div class="slider-row">
+        <span class="slider-icon">🔊</span>
+        <input type="range" id="masterSlider" min="0" max="100" value="75" oninput="updateVolumes()">
+        <span class="volume-value" id="masterValue">75%</span>
+      </div>
+
+      <p class="setting-label">MUSIC</p>
+      <div class="slider-row">
+        <span class="slider-icon">♪</span>
+        <input type="range" id="musicSlider" min="0" max="100" value="100" oninput="updateVolumes()">
+        <span class="volume-value" id="musicValue">100%</span>
+      </div>
+
+      <p class="setting-label">SFX</p>
+      <div class="slider-row">
+        <span class="slider-icon">💥</span>
+        <input type="range" id="sfxSlider" min="0" max="100" value="100" oninput="updateVolumes()">
+        <span class="volume-value" id="sfxValue">100%</span>
+      </div>
+
+      <div class="toggle-row">
+        <span class="setting-label" style="margin:0">UNFOCUSED VOLUME</span>
+        <div class="toggle-switch" id="unfocusedToggle" onclick="playClick();toggleUnfocused()">
+          <div class="toggle-knob"></div>
+        </div>
+      </div>
+
+      <div class="setting-divider"></div>
+
+      <p class="setting-label">MOVEMENT</p>
+      <div class="movement-pill-track" id="movementTrack" onclick="toggleMovementMode()">
+        <div class="movement-pill-slider" id="movementPill"></div>
+        <div class="movement-pill-opt active" id="optKeyboard" onclick="event.stopPropagation(); setMovementMode(0)">
+          <span class="pill-icon">⌨</span> KEYBOARD
+        </div>
+        <div class="movement-pill-opt" id="optMouse" onclick="event.stopPropagation(); setMovementMode(1)">
+          <span class="pill-icon">🖱</span> MOUSE
+        </div>
+      </div>
+    </div>
+    <div class="back-btn" onclick="playClick();showMenu()">← BACK</div>
+  </div>
+
+  <!-- CREDITS SCREEN -->
+  <div class="credits-screen" id="creditsScreen">
+    <h2 class="credits-title">★ CREDITS ★</h2>
+    <div class="credits-body">
+      <p class="credits-role">CREATED BY</p>
+      <p class="credits-name">seals_are_cute</p>
+    </div>
+    <div class="changelog-btn" onclick="playClick();showChangelog()">📜 CHANGELOG</div>
+    <div class="back-btn" onclick="playClick();showMenu()">← BACK</div>
+  </div>
+
+  <!-- CHANGELOG SCREEN -->
+  <div class="changelog-screen" id="changelogScreen">
+    <h2 class="changelog-title">📜 CHANGELOG 📜</h2>
+    <div class="changelog-box">
+      <div class="cl-entry">
+        <div class="cl-version">
+          <span>v0.1.2</span>
+          <span class="cl-tag">LATEST</span>
+        </div>
+        <ul class="cl-list">
+          <li>Added Movement Mode selector in Settings (Keyboard / Mouse)</li>
+          <li>Added pixel slime icon to browser tab indicator (favicon)</li>
+          <li>Refined slime sprite with squishy flat base & rounded bottom edges</li>
+        </ul>
+      </div>
+      <div class="cl-entry">
+        <div class="cl-version">
+          <span>v0.1.1</span>
+          <span class="cl-tag" style="border-color:var(--dim);color:var(--dim);background:transparent">PREVIOUS</span>
+        </div>
+        <ul class="cl-list">
+          <li>Added Gamemode Selector with Classic, Endless, and Placeholder modes</li>
+          <li>Added in-game Changelog viewer to Credits</li>
+          <li>Updated version counter to v0.1.1</li>
+        </ul>
+      </div>
+      <div class="cl-entry">
+        <div class="cl-version">
+          <span>v0.1.0</span>
+          <span class="cl-tag" style="border-color:var(--dim);color:var(--dim);background:transparent">INITIAL</span>
+        </div>
+        <ul class="cl-list">
+          <li>Added background music ("glassofwine.mp3")</li>
+          <li>Split volume controls into Master, Music, SFX sliders & Unfocused mute toggle</li>
+          <li>Added retro Web Audio synthesized click SFX</li>
+          <li>Added Settings screen with real-time volume adjustment</li>
+          <li>Added Credits screen featuring seals_are_cute</li>
+          <li>Custom blue pixel slime character with bounce & glow</li>
+          <li>Dark mode Balatro-inspired holographic tilt menu</li>
+        </ul>
+      </div>
+    </div>
+    <div class="back-btn" onclick="playClick();showCreditsFromChangelog()">← BACK</div>
+  </div>
+
+  <!-- GAME BATTLEFIELD SCREEN -->
+  <div class="game-screen" id="gameScreen">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- PLAYER HEALTH HUD (BOTTOM RIGHT) -->
+    <div class="game-health-hud" id="playerHealthHud">
+      <div class="health-label-row">
+        <span class="health-title">♥ HP</span>
+        <span class="health-numbers" id="playerHpText">100 / 100</span>
+      </div>
+      <div class="health-bar-track">
+        <div class="health-bar-fill" id="playerHpFill" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <!-- IN-GAME ABILITY BAR (BOTTOM LEFT) -->
+    <div class="game-ability-bar">
+      <div class="ability-slot ready" id="slotDash">
+        <svg class="ability-border-svg" viewBox="0 0 58 58">
+          <path class="ability-border-track" d="M 29 2 H 50 A 6 6 0 0 1 56 8 V 50 A 6 6 0 0 1 50 56 H 8 A 6 6 0 0 1 2 50 V 8 A 6 6 0 0 1 8 2 Z" />
+          <path class="ability-border-fill" id="borderDash" d="M 29 2 H 50 A 6 6 0 0 1 56 8 V 50 A 6 6 0 0 1 50 56 H 8 A 6 6 0 0 1 2 50 V 8 A 6 6 0 0 1 8 2 Z" />
+        </svg>
+        <span class="ability-key">SHIFT</span>
+        <span class="ability-name" id="nameDash">DASH</span>
+      </div>
+      <div class="ability-slot ready" id="slotShield">
+        <svg class="ability-border-svg" viewBox="0 0 58 58">
+          <path class="ability-border-track" d="M 29 2 H 50 A 6 6 0 0 1 56 8 V 50 A 6 6 0 0 1 50 56 H 8 A 6 6 0 0 1 2 50 V 8 A 6 6 0 0 1 8 2 Z" />
+          <path class="ability-border-fill" id="borderShield" d="M 29 2 H 50 A 6 6 0 0 1 56 8 V 50 A 6 6 0 0 1 50 56 H 8 A 6 6 0 0 1 2 50 V 8 A 6 6 0 0 1 8 2 Z" />
+        </svg>
+        <span class="ability-key">E</span>
+        <span class="ability-name" id="nameShield">SHIELD</span>
+      </div>
+    </div>
+
+    <!-- INTRO CUTSCENE OVERLAY -->
+    <div class="cutscene-letterbox top" id="cutsceneLetterboxTop"></div>
+    <div class="cutscene-letterbox bottom" id="cutsceneLetterboxBottom"></div>
+
+    <div class="cutscene-overlay" id="cutsceneOverlay">
+      <div class="cutscene-dialogue-box" id="cutsceneTextBox">
+        <span class="cutscene-speaker" id="cutsceneSpeaker">✦ ABYSSAL VOID ✦</span>
+        <p class="cutscene-text" id="cutsceneText"></p>
+      </div>
+
+      <div class="cutscene-boss-card" id="cutsceneBossCard">
+        <div class="boss-card-badge">CALAMITY DESCENDS</div>
+        <h1 class="boss-card-title">THE FALLEN SERAPH</h1>
+        <p class="boss-card-sub">HARBINGER OF THE SCOURGE</p>
+      </div>
+
+      <div class="cutscene-skip-prompt" id="cutsceneSkipBtn" onclick="skipCutscene()">[ SPACE / CLICK TO SKIP ]</div>
+    </div>
+
+    <!-- PHASE 1 SURVIVED BANNER -->
+    <div class="phase-banner" id="phaseBanner">
+      <div class="phase-badge">STAGE CLEAR</div>
+      <h2 class="phase-title">PHASE 1 SURVIVED</h2>
+      <p class="phase-sub">YOU ENDURED THE FALLEN SERAPH UNTIL 2:07</p>
+    </div>
+
+    <!-- IN-GAME PAUSE OVERLAY -->
+    <div class="pause-overlay" id="pauseOverlay">
+      <div class="pause-box" id="pauseMainBox">
+        <h2 class="pause-title">PAUSED</h2>
+        <div class="pause-menu">
+          <div class="menu-card" data-tilt onclick="resumeGame()">
+            <span class="card-label">▶ RESUME</span>
+          </div>
+          <div class="menu-card" data-tilt onclick="openInGameSettings()">
+            <span class="card-label">⚙ SETTINGS</span>
+          </div>
+          <div class="menu-card" data-tilt onclick="exitGame()">
+            <span class="card-label">← EXIT TO MENU</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IN-GAME SETTINGS PANEL -->
+      <div class="pause-box hidden" id="pauseSettingsBox">
+        <h2 class="pause-title" style="color:var(--accent2);font-size:1.1rem">⚙ SETTINGS</h2>
+        <div class="settings-group" style="width:280px;padding:18px 22px;gap:12px">
+          <p class="setting-label">MASTER</p>
+          <div class="slider-row">
+            <span class="slider-icon">🔊</span>
+            <input type="range" id="ingameMasterSlider" min="0" max="100" value="75" oninput="syncInGameVolumes('master', this.value)">
+            <span class="volume-value" id="ingameMasterValue">75%</span>
+          </div>
+
+          <p class="setting-label">MUSIC</p>
+          <div class="slider-row">
+            <span class="slider-icon">♪</span>
+            <input type="range" id="ingameMusicSlider" min="0" max="100" value="100" oninput="syncInGameVolumes('music', this.value)">
+            <span class="volume-value" id="ingameMusicValue">100%</span>
+          </div>
+
+          <p class="setting-label">SFX</p>
+          <div class="slider-row">
+            <span class="slider-icon">💥</span>
+            <input type="range" id="ingameSfxSlider" min="0" max="100" value="100" oninput="syncInGameVolumes('sfx', this.value)">
+            <span class="volume-value" id="ingameSfxValue">100%</span>
+          </div>
+
+          <div class="setting-divider"></div>
+
+          <p class="setting-label">MOVEMENT</p>
+          <div class="movement-pill-track" id="ingameMovementTrack" onclick="toggleMovementMode(); syncInGameMovementUI()">
+            <div class="movement-pill-slider"></div>
+            <div class="movement-pill-opt active" id="ingameOptKeyboard" onclick="event.stopPropagation(); setMovementMode(0); syncInGameMovementUI()">
+              <span class="pill-icon">⌨</span> KEYBOARD
+            </div>
+            <div class="movement-pill-opt" id="ingameOptMouse" onclick="event.stopPropagation(); setMovementMode(1); syncInGameMovementUI()">
+              <span class="pill-icon">🖱</span> MOUSE
+            </div>
+          </div>
+        </div>
+        <div class="back-btn" style="width:180px;padding:10px 14px;font-size:.65rem;margin-top:14px" onclick="closeInGameSettings()">← BACK</div>
+      </div>
+    </div>
+
+    <!-- IN-GAME DEFEAT OVERLAY -->
+    <div class="pause-overlay" id="defeatOverlay">
+      <div class="pause-box">
+        <h2 class="pause-title" style="color:#ff2a55; text-shadow:0 0 20px rgba(255,42,85,0.8); font-size:1.6rem">YOU PERISHED</h2>
+        <p style="font-size:0.75rem; color:#8892b0; margin-top:-8px; letter-spacing:0.06em">THE FALLEN SERAPH PREVAILED</p>
+        <div class="pause-menu" style="margin-top:10px">
+          <div class="menu-card" data-tilt onclick="startStandardGame()">
+            <span class="card-label">↺ RETRY</span>
+          </div>
+          <div class="menu-card" data-tilt onclick="exitGame()">
+            <span class="card-label">← EXIT TO MENU</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
